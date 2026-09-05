@@ -1,0 +1,320 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>my-story-maker — MVP</title>
+  <style>
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      font-family: ui-sans-serif, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Helvetica, Arial, sans-serif;
+      background: #f6f6f6; color: #111;
+    }
+    .topbar {
+      position: sticky; top: 0; z-index: 5;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 24px;
+      background: rgba(255,255,255,0.9);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid rgba(0,0,0,0.06);
+    }
+    .brand { font-weight: 800; letter-spacing: -0.3px; }
+    .actions { display:flex; gap:10px; }
+    .btn {
+      padding: 10px 14px; border-radius: 12px;
+      border: 1px solid rgba(0,0,0,0.08); background: #fff;
+      font-weight: 700; font-size: 13px; cursor: pointer;
+    }
+    .btn.primary { background: #111; color: #fff; border-color: #111; }
+
+    .wrap { max-width: 1100px; margin: 0 auto; padding: 24px; }
+    .grid {
+      display: grid;
+      grid-template-columns: 1.4fr 1fr;
+      gap: 20px;
+    }
+    @media (max-width: 920px) { .grid { grid-template-columns: 1fr; } }
+
+    .panel {
+      background: #fff; border-radius: 16px;
+      box-shadow: 0 1px 0 rgba(0,0,0,0.04), 0 10px 24px rgba(0,0,0,0.06);
+      overflow: hidden;
+    }
+    .panel h2 {
+      margin: 0; padding: 14px 16px;
+      font-size: 14px; text-transform: uppercase; letter-spacing: 0.08em; opacity: 0.7;
+    }
+
+    /* Feed */
+    .feed {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px; padding: 10px;
+    }
+    .tile {
+      aspect-ratio: 1 / 1; border-radius: 12px; overflow: hidden;
+      background: #e5e5e5; position: relative; cursor: pointer;
+    }
+    .tile img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .tile .overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(0,0,0,0.25), transparent 40%);
+      opacity: 0; transition: opacity .2s ease;
+    }
+    .tile:hover .overlay { opacity: 1; }
+    .tile.selected { outline: 3px solid #111; }
+
+    /* Templates */
+    .templates { display: grid; gap: 10px; padding: 10px; }
+    .tpl {
+      display: grid; gap: 8px; padding: 10px; border-radius: 12px;
+      background: #f6f6f6; cursor: pointer;
+    }
+    .tpl.active { outline: 3px solid #111; }
+    .tpl .row { display: grid; gap: 8px; }
+    .tpl .row-2 { grid-template-columns: repeat(2, 1fr); }
+    .tpl .row-3 { grid-template-columns: repeat(3, 1fr); }
+    .box { height: 48px; border-radius: 8px; background: linear-gradient(180deg, #cfe8ff, #ffd1dc); }
+
+    /* Canvas Story */
+    .stage {
+      position: relative;
+      aspect-ratio: 9/16;
+      border-radius: 14px;
+      background: linear-gradient(180deg, #bde0fe 0%, #a2d2ff 35%, #ffafcc 100%);
+      overflow: hidden;
+      box-shadow: inset 0 0 0 1px rgba(0,0,0,0.06);
+    }
+    .stage img.bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
+    .text-item {
+      position: absolute; left: 50%; transform: translateX(-50%);
+      padding: 10px 14px; border-radius: 999px;
+      background: rgba(255,255,255,0.55); backdrop-filter: blur(4px);
+      font-weight: 700; color: #3b2417; cursor: move;
+      user-select: none;
+    }
+    .tool {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 10px 12px; border-radius: 12px; background: #f6f6f6;
+    }
+    .tool .label { font-weight: 700; font-size: 13px; }
+    .tool .hint { font-size: 12px; opacity: 0.7; }
+    .chips { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
+    .chip {
+      padding: 8px 10px; border-radius: 999px;
+      border: 1px solid rgba(0,0,0,0.08); background: #fff;
+      font-size: 12px; font-weight: 600; cursor: pointer;
+    }
+    .chip.active { background: #111; color: #fff; border-color: #111; }
+
+    .empty { padding: 24px 16px; font-size: 13px; opacity: 0.7; }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">my-story-maker</div>
+    <div class="actions">
+      <button class="btn" onclick="resetCanvas()">Limpar</button>
+      <button class="btn primary" onclick="exportImage()">Exportar story</button>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <div class="grid">
+      <!-- Coluna esquerda -->
+      <div style="display:flex; flex-direction:column; gap:20px;">
+        <!-- 1) Templates de colagem -->
+        <section class="panel">
+          <h2>Templates de colagem</h2>
+          <div class="templates">
+            <div class="tpl" data-template="grid3" onclick="applyTemplate('grid3', this)">
+              <div class="row row-3"><div class="box"></div><div class="box"></div><div class="box"></div></div>
+              <div class="row row-3"><div class="box"></div><div class="box"></div><div class="box"></div></div>
+              <div class="row row-3"><div class="box"></div><div class="box"></div><div class="box"></div></div>
+            </div>
+            <div class="tpl" data-template="grid2" onclick="applyTemplate('grid2', this)">
+              <div class="row row-2"><div class="box"></div><div class="box"></div></div>
+              <div class="row row-2"><div class="box"></div><div class="box"></div></div>
+            </div>
+            <div class="tpl" data-template="mosaic" onclick="applyTemplate('mosaic', this)">
+              <div class="row row-3"><div class="box" style="grid-column: span 2;"></div><div class="box"></div></div>
+              <div class="row row-3"><div class="box"></div><div class="box"></div><div class="box"></div></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 2) Pré-visualização no feed (dump de fotos) -->
+        <section class="panel">
+          <h2>Pré-visualização no feed</h2>
+          <div class="feed" id="feed">
+            <div class="tile" onclick="toggleSelect(this)">
+              <img src="https://images.unsplash.com/photo-1520839090488-4a6c211e2f94?w=400&q=80" alt="foto" />
+              <div class="overlay"></div>
+            </div>
+            <div class="tile" onclick="toggleSelect(this)">
+              <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=400&q=80" alt="foto" />
+              <div class="overlay"></div>
+            </div>
+            <div class="tile" onclick="toggleSelect(this)">
+              <img src="https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=400&q=80" alt="foto" />
+              <div class="overlay"></div>
+            </div>
+            <div class="tile" onclick="toggleSelect(this)">
+              <img src="https://images.unsplash.com/photo-1500530855699-b59d19a91e26?w=400&q=80" alt="foto" />
+              <div class="overlay"></div>
+            </div>
+            <div class="tile" onclick="toggleSelect(this)">
+              <img src="https://images.unsplash.com/photo-1500534623283-312aade485b7?w=400&q=80" alt="foto" />
+              <div class="overlay"></div>
+            </div>
+            <div class="tile" onclick="toggleSelect(this)">
+              <img src="https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=400&q=80" alt="foto" />
+              <div class="overlay"></div>
+            </div>
+            <div class="tile" onclick="toggleSelect(this)">
+              <img src="https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=400&q=80" alt="foto" />
+              <div class="overlay"></div>
+            </div>
+            <div class="tile" onclick="toggleSelect(this)">
+              <img src="https://images.unsplash.com/photo-1470770841072-f978cf4d019e?w=400&q=80" alt="foto" />
+              <div class="overlay"></div>
+            </div>
+            <div class="tile" onclick="toggleSelect(this)">
+              <img src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=400&q=80" alt="foto" />
+              <div class="overlay"></div>
+            </div>
+          </div>
+          <div class="empty">Clique nas fotos para selecionar e usar no story.</div>
+        </section>
+      </div>
+
+      <!-- Coluna direita: editor story -->
+      <section class="panel">
+        <h2>Editor de stories</h2>
+        <div style="padding: 16px; display:flex; flex-direction:column; gap:14px;">
+          <div class="stage" id="stage">
+            <img class="bg" id="stageBg" src="https://images.unsplash.com/photo-1500835556837-99ac94a94552?w=600&q=80" alt="fundo" />
+            <div id="textLayer"></div>
+          </div>
+
+          <!-- 3) Filtros básicos -->
+          <div class="tool">
+            <div>
+              <div class="label">Filtros</div>
+              <div class="hint">brilho, contraste, calor</div>
+            </div>
+          </div>
+          <div class="chips" id="filterChips">
+            <span class="chip active" data-filter="none">Natural</span>
+            <span class="chip" data-filter="warm">Quente</span>
+            <span class="chip" data-filter="cool">Frio</span>
+            <span class="chip" data-filter="vintage">Vintage</span>
+          </div>
+
+          <!-- 4) Adicionar textos -->
+          <div class="tool">
+            <div>
+              <div class="label">Texto</div>
+              <div class="hint">adicione títulos, legendas ou hashtags</div>
+            </div>
+          </div>
+          <div class="chips">
+            <span class="chip" onclick="addText('Título')">Título</span>
+            <span class="chip" onclick="addText('Legenda')">Legenda</span>
+            <span class="chip" onclick="addText('#hashtag')">Hashtag</span>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <script>
+    const stage = document.getElementById('stage');
+    const stageBg = document.getElementById('stageBg');
+    const textLayer = document.getElementById('textLayer');
+
+    // Selecionar fotos do feed
+    function toggleSelect(el) {
+      el.classList.toggle('selected');
+      const img = el.querySelector('img');
+      if (!img) return;
+
+      // Atualiza preview do stage com a primeira foto selecionada
+      const selected = Array.from(document.querySelectorAll('.tile.selected')).map(t => t.querySelector('img').src);
+      if (selected.length > 0) {
+        stageBg.src = selected[0];
+      }
+    }
+
+    // Templates: efeito visual simplificado
+    function applyTemplate(name, el) {
+      document.querySelectorAll('.tpl').forEach(x => x.classList.remove('active'));
+      el.classList.add('active');
+      // Em uma versão completa, aqui atualizaria o grid do stage
+      alert('Template aplicado: ' + name);
+    }
+
+    // Filtros via CSS filter no fundo
+    const filters = {
+      none: 'none',
+      warm: 'sepia(0.2) saturate(1.2) brightness(1.05)',
+      cool: 'saturate(0.9) hue-rotate(12deg) brightness(1.05)',
+      vintage: 'sepia(0.35) contrast(1.05) brightness(0.95)'
+    };
+    document.getElementById('filterChips').addEventListener('click', (e) => {
+      const chip = e.target.closest('.chip');
+      if (!chip) return;
+      document.querySelectorAll('#filterChips .chip').forEach(c => c.classList.remove('active'));
+      chip.classList.add('active');
+      stageBg.style.filter = filters[chip.dataset.filter] || 'none';
+    });
+
+    // Textos arrastáveis
+    function addText(content) {
+      const el = document.createElement('div');
+      el.className = 'text-item';
+      el.textContent = content;
+      el.style.top = '40%';
+      makeDraggable(el);
+      textLayer.appendChild(el);
+    }
+    function makeDraggable(el) {
+      let startX = 0, startY = 0, initLeft = 0, initTop = 0;
+      el.addEventListener('pointerdown', (e) => {
+        startX = e.clientX; startY = e.clientY;
+        const rect = el.getBoundingClientRect();
+        const parentRect = stage.getBoundingClientRect();
+        initLeft = rect.left - parentRect.left + rect.width/2;
+        initTop = rect.top - parentRect.top + rect.height/2;
+        el.setPointerCapture(e.pointerId);
+        el.addEventListener('pointermove', onMove);
+        el.addEventListener('pointerup', onUp);
+      });
+      function onMove(e) {
+        const dx = e.clientX - startX, dy = e.clientY - startY;
+        el.style.left = (initLeft + dx) + 'px';
+        el.style.top = (initTop + dy) + 'px';
+        el.style.transform = 'translate(-50%, -50%)';
+      }
+      function onUp() {
+        el.removeEventListener('pointermove', onMove);
+        el.removeEventListener('pointerup', onUp);
+      }
+    }
+
+    // Exportação simulada
+    function exportImage() {
+      alert('Exportar story em PNG/JPG/WebP.');
+    }
+    function resetCanvas() {
+      stageBg.style.filter = 'none';
+      document.querySelectorAll('#filterChips .chip').forEach(c => c.classList.remove('active'));
+      const first = document.querySelector('#filterChips .chip');
+      if (first) first.classList.add('active');
+      textLayer.innerHTML = '';
+    }
+  </script>
+</body>
+</html>

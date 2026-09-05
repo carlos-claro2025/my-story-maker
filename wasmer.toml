@@ -1,0 +1,12 @@
+[package]
+name = "my-story-maker"
+version = "0.1.0"
+description = "Editor de stories e collages para Instagram rodando no browser."
+authors = ["Karlo"]
+license = "MIT"
+readme = "README.md"
+repository = ""
+
+[deploy]
+template = "static-website"
+public_dir = "public"

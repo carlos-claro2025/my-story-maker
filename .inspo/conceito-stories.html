@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>my-story-maker — Conceito Stories</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: ui-sans-serif, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Helvetica, Arial, sans-serif;
+      background: #fafafa; color: #111;
+    }
+    .topbar {
+      position: sticky; top: 0; z-index: 5;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 24px;
+      background: rgba(255,255,255,0.85);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid rgba(0,0,0,0.06);
+    }
+    .brand { font-weight: 800; letter-spacing: -0.3px; }
+    .wrap { max-width: 1100px; margin: 0 auto; padding: 28px 24px; }
+    .split {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+    @media (max-width: 860px) { .split { grid-template-columns: 1fr; } }
+    .panel {
+      background: #fff; border-radius: 16px;
+      box-shadow: 0 1px 0 rgba(0,0,0,0.04), 0 8px 24px rgba(0,0,0,0.06);
+      padding: 16px;
+    }
+    .panel h3 { margin: 4px 0 12px; font-size: 14px; opacity: 0.7; text-transform: uppercase; letter-spacing: 0.08em; }
+    .phone {
+      margin: 0 auto;
+      width: 260px; aspect-ratio: 9/16;
+      border-radius: 24px;
+      background:
+        linear-gradient(180deg, #bde0fe 0%, #ffd7e8 100%);
+      position: relative; overflow: hidden;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.18);
+      border: 8px solid #fff;
+    }
+    .scene {
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(circle at 20% 25%, rgba(255,255,255,0.55), transparent 25%),
+        radial-gradient(circle at 80% 35%, rgba(255,255,255,0.45), transparent 22%),
+        linear-gradient(180deg, #d0f0fd, #ffd7e8);
+    }
+    .story-text {
+      position: absolute; left: 50%; top: 40%; transform: translate(-50%, -50%);
+      font-family: "Playfair Display", ui-serif, Georgia, serif;
+      font-size: 28px; color: #3b2417; text-align: center;
+      text-shadow: 0 2px 0 rgba(255,255,255,0.4);
+    }
+    .story-sub {
+      position: absolute; left: 50%; top: 54%; transform: translate(-50%, -50%);
+      background: rgba(255,255,255,0.55);
+      padding: 8px 12px; border-radius: 999px;
+      backdrop-filter: blur(4px);
+      font-weight: 700; color: #3b2417; font-size: 13px;
+    }
+    .controls { display: flex; flex-direction: column; gap: 10px; }
+    .row { display:flex; align-items:center; justify-content: space-between; gap: 10px; }
+    .slider {
+      flex: 1; height: 8px; border-radius: 999px;
+      background: linear-gradient(90deg, #ffd1dc, #cfe8ff);
+    }
+    .filter-preset {
+      display:flex; gap: 8px; flex-wrap: wrap;
+    }
+    .chip {
+      padding: 8px 10px; border-radius: 999px;
+      border: 1px solid rgba(0,0,0,0.08); background: #fff;
+      font-size: 12px; font-weight: 700;
+    }
+    .chip.active { background: #111; color: #fff; border-color: #111; }
+    .actions { display:flex; gap: 10px; margin-top: 10px; }
+    .btn {
+      padding: 10px 14px; border-radius: 12px; border: 1px solid rgba(0,0,0,0.08);
+      background: #fff; font-weight: 700; font-size: 13px;
+    }
+    .btn.primary { background: #111; color: #fff; border-color: #111; }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">my-story-maker</div>
+    <div style="display:flex; gap:10px;">
+      <button class="btn">Pré-visualizar</button>
+      <button class="btn primary">Publicar</button>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <div class="split">
+      <!-- Pré-visualização no formato story -->
+      <section class="panel">
+        <h3>Pré-visualização no formato story</h3>
+        <div class="phone">
+          <div class="scene"></div>
+          <div class="story-text">Romantic Turkey</div>
+          <div class="story-sub">✨ Capadócia</div>
+        </div>
+        <div class="note" style="margin-top:10px; font-size:12px; opacity:0.7;">
+          Formato 9:16, com área de texto e subtítulo flutuante.
+        </div>
+      </section>
+
+      <!-- Controles -->
+      <section class="panel">
+        <h3>Ferramentas</h3>
+        <div class="controls">
+          <div>
+            <div class="row"><span style="font-weight:700; font-size:13px;">Filtros</span><span style="font-size:12px; opacity:0.7;">intensidade</span></div>
+            <div class="slider"></div>
+          </div>
+
+          <div>
+            <div class="row"><span style="font-weight:700; font-size:13px;">Presets</span></div>
+            <div class="filter-preset">
+              <span class="chip active">Natural</span>
+              <span class="chip">Quente</span>
+              <span class="chip">Frio</span>
+              <span class="chip">Vintage</span>
+            </div>
+          </div>
+
+          <div>
+            <div class="row"><span style="font-weight:700; font-size:13px;">Texto</span><span style="font-size:12px; opacity:0.7;">fonte, cor, alinhamento</span></div>
+            <div class="filter-preset">
+              <span class="chip">Título</span>
+              <span class="chip">Legenda</span>
+              <span class="chip">Hashtag</span>
+            </div>
+          </div>
+
+          <div class="actions">
+            <button class="btn primary">Aplicar ao story</button>
+            <button class="btn">Salvar rascunho</button>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+</body>
+</html>

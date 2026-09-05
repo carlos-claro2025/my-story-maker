@@ -1,0 +1,546 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>my-story-maker — MVP</title>
+  <style>
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      font-family: ui-sans-serif, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Helvetica, Arial, sans-serif;
+      background: #f3f4f6; color: #111;
+    }
+    .topbar {
+      position: sticky; top: 0; z-index: 5;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 24px;
+      background: rgba(255,255,255,0.9);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid rgba(0,0,0,0.06);
+    }
+    .brand { font-weight: 800; letter-spacing: -0.3px; }
+    .actions { display:flex; gap:10px; }
+    .btn {
+      padding: 10px 14px; border-radius: 12px;
+      border: 1px solid rgba(0,0,0,0.08); background: #fff;
+      font-weight: 700; font-size: 13px; cursor: pointer;
+    }
+    .btn.primary { background: #111; color: #fff; border-color: #111; }
+
+    .app {
+      display: grid;
+      grid-template-columns: 220px 1fr 300px;
+      height: 100vh;
+    }
+
+    /* Sidebar esquerda */
+    .sidebar {
+      background: #fff; border-right: 1px solid rgba(0,0,0,0.06);
+      padding: 16px 12px; display: flex; flex-direction: column; gap: 6px;
+    }
+    .brand {
+      font-weight: 800; letter-spacing: -0.3px; font-size: 18px; padding: 6px 10px;
+    }
+    .project { font-size: 12px; opacity: 0.6; padding: 2px 10px 10px; }
+    .nav-item {
+      display:flex; align-items:center; gap:10px; padding:10px 12px; border-radius:10px;
+      font-size:13px; font-weight:600; cursor:pointer;
+    }
+    .nav-item:hover { background:#f6f6f6; }
+    .nav-item.active { background:#111; color:#fff; }
+    .icon {
+      width: 28px; height: 28px; border-radius: 8px;
+      background: #f6f6f6; display:flex; align-items:center; justify-content:center;
+      font-size: 14px;
+    }
+    .nav-item.active .icon { background: rgba(255,255,255,0.2); }
+
+    /* Centro */
+    .center {
+      display: flex; flex-direction: column; background: #f3f4f6;
+    }
+    .topbar {
+      display:flex; align-items:center; justify-content: space-between;
+      padding: 12px 18px; background: rgba(255,255,255,0.9);
+      border-bottom: 1px solid rgba(0,0,0,0.06);
+    }
+    .canvas-wrap {
+      flex: 1; display:flex; align-items:center; justify-content:center; padding: 18px;
+    }
+    .phone {
+      width: 340px; aspect-ratio: 9/16; border-radius: 22px;
+      background: #fff; box-shadow: 0 25px 60px rgba(0,0,0,0.18);
+      border: 8px solid #fff; position: relative; overflow: hidden;
+    }
+    @media (min-width: 1100px) { .phone { width: 360px; } }
+
+    .phone .bg-img {
+      position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block;
+      transition: filter .25s ease, transform .25s ease;
+    }
+    .grid-overlay {
+      position:absolute; inset:0; pointer-events:none;
+    }
+    .grid-overlay .cell {
+      position:absolute; border: 1px dashed rgba(0,0,0,0.35);
+      background: rgba(255,255,255,0.05);
+    }
+    .text-item {
+      position:absolute; left:50%; transform:translateX(-50%);
+      padding: 8px 12px; border-radius: 8px;
+      background: rgba(255,255,255,0.75); backdrop-filter: blur(4px);
+      font-weight: 700; color: #3b2417; cursor: move; user-select:none;
+      border: 2px solid transparent; min-width: 60px;
+    }
+    .text-item.selected { border-color: #2563eb; }
+    .sticker {
+      position:absolute; font-size: 28px; cursor: move; user-select:none;
+      filter: drop-shadow(0 6px 10px rgba(0,0,0,0.15));
+    }
+    .shape {
+      position:absolute; cursor: move; user-select:none;
+      border: 3px solid #fff; border-radius: 10px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.18);
+    }
+    .line {
+      position:absolute; height: 3px; background:#fff; border-radius: 999px;
+      border:none; cursor: move; user-select:none;
+      box-shadow: 0 6px 12px rgba(0,0,0,0.18);
+    }
+    .phone.dragover { outline: 3px dashed #2563eb; }
+
+    .upload-area {
+      margin-top: 10px; padding: 12px;
+      border: 2px dashed rgba(0,0,0,0.12); border-radius: 14px;
+      background: #fafafa; font-size: 12px; opacity: 0.85;
+    }
+    .feed { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; padding: 8px; }
+    .tile {
+      aspect-ratio: 1 / 1; border-radius: 12px; overflow: hidden;
+      background: #e5e5e5; position: relative; cursor: pointer;
+      border: 2px solid transparent;
+    }
+    .tile img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .tile.selected { border-color: #111; }
+    .tile.dragover { border-color: #2563eb; background: #dbeafe; }
+
+    /* Direita */
+    .tools {
+      background:#fff; border-left:1px solid rgba(0,0,0,0.06);
+      padding: 16px 14px; display:flex; flex-direction:column; gap: 16px; overflow:auto;
+    }
+    .tool-section h3 {
+      margin: 0 0 10px; font-size: 12px; text-transform: uppercase; letter-spacing: 0.1em; opacity: 0.6;
+    }
+    .tabs { display:flex; gap:8px; }
+    .tab {
+      flex:1; padding:10px; border-radius:12px; text-align:center; font-size:13px; font-weight:700;
+      background:#f6f6f6; cursor:pointer;
+    }
+    .tab.active { background:#111; color:#fff; }
+    .filters-grid { display:grid; grid-template-columns: repeat(3, 1fr); gap:10px; }
+    .filter-card {
+      aspect-ratio: 1/1; border-radius: 12px; overflow:hidden; cursor:pointer;
+      border: 2px solid transparent; background:#e5e5e5; position:relative;
+    }
+    .filter-card img { width:100%; height:100%; object-fit:cover; display:block; }
+    .filter-card.active { border-color:#111; }
+    .filter-card .label {
+      position:absolute; bottom: 6px; left: 0; right: 0; text-align: center;
+      font-size: 10px; font-weight: 700; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+    }
+    .slider-row { display:flex; align-items:center; justify-content:space-between; gap:10px; font-size:13px; }
+    .slider-row input[type="range"] { flex:1; accent-color:#111; }
+    .quick-add { display:grid; grid-template-columns: repeat(4, 1fr); gap:10px; }
+    .quick-btn {
+      aspect-ratio: 1/1; border-radius:12px; background:#f6f6f6;
+      display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px;
+      font-size:11px; font-weight:700; cursor:pointer;
+    }
+    .quick-btn .ic { font-size: 22px; }
+    .quick-btn.active { border:2px solid #111; background:#fff; }
+    .empty { padding: 24px 16px; font-size: 13px; opacity: 0.7; }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <!-- Sidebar esquerda -->
+    <aside class="sidebar">
+      <div>
+        <div class="brand">WANDERLAB</div>
+        <div class="project">Projeto • Viagem Turquia</div>
+      </div>
+      <div class="nav-item"><span class="icon">◆</span> Templates</div>
+      <div class="nav-item"><span class="icon">M</span> Mídia</div>
+      <div class="nav-item"><span class="icon">★</span> Elementos</div>
+      <div class="nav-item active"><span class="icon">T</span> Texto</div>
+      <div class="nav-item"><span class="icon">♫</span> Música</div>
+      <div class="nav-item"><span class="icon">▦</span> Feed</div>
+      <div style="margin-top:auto;" class="nav-item"><span class="icon">⚙</span> Ajustes</div>
+    </aside>
+
+    <!-- Centro -->
+    <section class="center">
+      <header class="topbar">
+        <div style="font-weight:700; font-size:13px; opacity:0.75;">Story • 1080 × 1920</div>
+        <div class="actions">
+          <button class="btn" onclick="resetAll()">Limpar</button>
+          <button class="btn" onclick="saveProject()">Salvo</button>
+          <button class="btn" onclick="previewStory()">Pré-visualizar</button>
+          <button class="btn primary" onclick="exportStory()">Exportar</button>
+        </div>
+      </header>
+      <div class="canvas-wrap">
+        <div class="phone" id="phone"
+             ondragover="dragOverStage(event)"
+             ondragleave="dragLeaveStage(event)"
+             ondrop="dropOnStage(event)">
+          <img class="bg-img" id="stageBg" src="https://images.unsplash.com/photo-1500835556837-99ac94a94552?w=600&q=80" alt="fundo" />
+          <div class="grid-overlay" id="gridOverlay"></div>
+          <div id="textLayer"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Direita -->
+    <aside class="tools">
+      <div class="tool-section">
+        <div class="tabs">
+          <div class="tab active" onclick="switchTab(this, 'panel-edit')">Editar</div>
+          <div class="tab" onclick="switchTab(this, 'panel-layers')">Camadas</div>
+        </div>
+      </div>
+
+      <div class="tool-section" id="panel-edit">
+        <h3>Filtros</h3>
+        <div class="filters-grid" id="filterGrid">
+          <div class="filter-card active" data-filter="none" onclick="applyPresetFilter(this, 'none')">
+            <img src="https://images.unsplash.com/photo-1500835556837-99ac94a94552?w=200&q=80" alt="original" />
+            <div class="label">Original</div>
+          </div>
+          <div class="filter-card" data-filter="clarea" onclick="applyPresetFilter(this, 'clarea')">
+            <img src="https://images.unsplash.com/photo-1500835556837-99ac94a94552?w=200&q=80" alt="clarea" />
+            <div class="label">Clarea</div>
+          </div>
+          <div class="filter-card" data-filter="avella" onclick="applyPresetFilter(this, 'avella')">
+            <img src="https://images.unsplash.com/photo-1500835556837-99ac94a94552?w=200&q=80" alt="avella" />
+            <div class="label">Avellã</div>
+          </div>
+          <div class="filter-card" data-filter="por-do-sol" onclick="applyPresetFilter(this, 'por-do-sol')">
+            <img src="https://images.unsplash.com/photo-1500835556837-99ac94a94552?w=200&q=80" alt="por do sol" />
+            <div class="label">Pôr do sol</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tool-section" id="panel-layers" style="display:none;">
+        <h3>Camadas</h3>
+        <div style="font-size:12px; opacity:0.7;">Em breve: reordene textos, stickers e formas.</div>
+      </div>
+
+      <div class="tool-section">
+        <h3>Upload</h3>
+        <label class="btn" style="display:flex; align-items:center; justify-content:center; gap:8px;">
+          Adicionar foto
+          <input id="fileInput" type="file" accept="image/*" multiple style="display:none" onchange="handleUpload(event)" />
+        </label>
+        <div style="font-size:12px; opacity:0.7; margin-top:8px;">Arraste fotos do feed para o editor ou clique para enviar.</div>
+      </div>
+
+      <div class="tool-section">
+        <h3>Fotos recentes</h3>
+        <div class="feed" id="feed">
+          <div class="tile" draggable="true" ondragstart="dragStart(event)">
+            <img src="https://images.unsplash.com/photo-1520839090488-4a6c211e2f94?w=200&q=80" alt="foto" />
+          </div>
+          <div class="tile" draggable="true" ondragstart="dragStart(event)">
+            <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=200&q=80" alt="foto" />
+          </div>
+          <div class="tile" draggable="true" ondragstart="dragStart(event)">
+            <img src="https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=200&q=80" alt="foto" />
+          </div>
+          <div class="tile" draggable="true" ondragstart="dragStart(event)">
+            <img src="https://images.unsplash.com/photo-1500530855699-b59d19a91e26?w=200&q=80" alt="foto" />
+          </div>
+          <div class="tile" draggable="true" ondragstart="dragStart(event)">
+            <img src="https://images.unsplash.com/photo-1500534623283-312aade485b7?w=200&q=80" alt="foto" />
+          </div>
+          <div class="tile" draggable="true" ondragstart="dragStart(event)">
+            <img src="https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=200&q=80" alt="foto" />
+          </div>
+        </div>
+      </div>
+
+      <div class="tool-section">
+        <h3>Ajustes</h3>
+        <div class="slider-row">
+          <span>Brilho</span>
+          <input type="range" id="brightness" min="0" max="200" value="100" oninput="applyAdjustments()" />
+          <span id="brightnessVal">100</span>
+        </div>
+        <div class="slider-row">
+          <span>Saturação</span>
+          <input type="range" id="saturation" min="0" max="200" value="100" oninput="applyAdjustments()" />
+          <span id="saturationVal">100</span>
+        </div>
+        <div class="slider-row">
+          <span>Zoom da foto</span>
+          <input type="range" id="zoom" min="100" max="200" value="100" oninput="applyAdjustments()" />
+          <span id="zoomVal">100</span>
+        </div>
+      </div>
+
+      <div class="tool-section">
+        <h3>Adicionar</h3>
+        <div class="quick-add">
+          <div class="quick-btn" onclick="addText('Título')">
+            <span class="ic">T</span>
+            <span>Texto</span>
+          </div>
+          <div class="quick-btn" onclick="addSticker('★')">
+            <span class="ic">★</span>
+            <span>Sticker</span>
+          </div>
+          <div class="quick-btn" onclick="addShape()">
+            <span class="ic">▭</span>
+            <span>Forma</span>
+          </div>
+          <div class="quick-btn" onclick="addLine()">
+            <span class="ic">/</span>
+            <span>Linha</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="tool-section">
+        <h3>Estilo do texto</h3>
+        <div class="slider-row">
+          <span>Cor</span>
+          <input type="color" id="textColor" value="#3b2417" onchange="updateSelectedTextColor(this.value)" />
+        </div>
+        <div class="slider-row">
+          <span>Tamanho</span>
+          <input type="range" id="textSize" min="12" max="72" value="26" oninput="updateSelectedTextSize(this.value)" />
+          <span id="textSizeVal">26</span>
+        </div>
+        <div class="slider-row">
+          <span>Fonte</span>
+          <select id="textFont" onchange="updateSelectedTextFont(this.value)" style="padding:8px; border-radius:999px; border:1px solid rgba(0,0,0,0.08); flex:1;">
+            <option value="ui-sans-serif, sans-serif">Sem serifa</option>
+            <option value="ui-serif, Georgia, serif">Serif</option>
+            <option value="ui-monospace, monospace">Mono</option>
+          </select>
+        </div>
+      </div>
+    </aside>
+  </div>
+
+  <script>
+    const phone = document.getElementById('phone');
+    const stageBg = document.getElementById('stageBg');
+    const textLayer = document.getElementById('textLayer');
+    const gridOverlay = document.getElementById('gridOverlay');
+    let currentTemplate = 'vazio';
+    let selectedEl = null;
+    let draggedSrc = null;
+
+    function switchTab(tabEl, panelId) {
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      tabEl.classList.add('active');
+      document.querySelectorAll('.tool-section').forEach(s => s.style.display = 'none');
+      const target = document.getElementById(panelId);
+      if (target) target.style.display = 'block';
+    }
+
+    const presetFilters = {
+      none: 'none',
+      clarea: 'brightness(1.08) saturate(0.9) contrast(1.05)',
+      avella: 'sepia(0.25) saturate(1.15) brightness(1.03)',
+      'por-do-sol': 'sepia(0.35) saturate(1.25) brightness(1.02) hue-rotate(-8deg)'
+    };
+
+    function applyPresetFilter(el, name) {
+      document.querySelectorAll('.filter-card').forEach(c => c.classList.remove('active'));
+      el.classList.add('active');
+      applyAdjustments();
+    }
+
+    function applyAdjustments() {
+      const brightness = document.getElementById('brightness').value;
+      const saturation = document.getElementById('saturation').value;
+      const zoom = document.getElementById('zoom').value;
+
+      document.getElementById('brightnessVal').textContent = brightness;
+      document.getElementById('saturationVal').textContent = saturation;
+      document.getElementById('zoomVal').textContent = zoom;
+
+      const base = 'none';
+      const extra = `brightness(${brightness}%) saturate(${saturation}%)`;
+      stageBg.style.filter = `${base} ${extra}`.trim();
+
+      const scale = zoom / 100;
+      stageBg.style.transform = `scale(${scale})`;
+      stageBg.style.transformOrigin = 'center center';
+    }
+
+    function saveProject() {
+      alert('Projeto salvo localmente (simulação).');
+    }
+    function previewStory() {
+      alert('Pré-visualização: em uma versão completa, abriria um modal em tela cheia.');
+    }
+    function exportStory() {
+      alert('Exportar story: em uma versão completa, geraria PNG/JPG/WebP via canvas ou html2canvas.');
+    }
+    function resetAll() {
+      stageBg.style.filter = 'none';
+      document.querySelectorAll('.filter-card').forEach(c => c.classList.remove('active'));
+      const firstActive = document.querySelector('.filter-card');
+      if (firstActive) firstActive.classList.add('active');
+      textLayer.innerHTML = '';
+      gridOverlay.innerHTML = '';
+      document.getElementById('brightness').value = 100;
+      document.getElementById('saturation').value = 100;
+      document.getElementById('zoom').value = 100;
+      applyAdjustments();
+    }
+
+    // Drag and drop de fotos no stage/phone
+    function dragStart(e) {
+      draggedSrc = e.target.querySelector('img')?.src || null;
+      e.dataTransfer.setData('text/plain', draggedSrc);
+    }
+
+    function dragOverStage(e) {
+      e.preventDefault();
+      phone.classList.add('dragover');
+    }
+    function dragLeaveStage(e) {
+      phone.classList.remove('dragover');
+    }
+    function dropOnStage(e) {
+      e.preventDefault();
+      phone.classList.remove('dragover');
+      const src = e.dataTransfer.getData('text/plain');
+      if (!src) return;
+      stageBg.src = src;
+    }
+
+    // Upload
+    function handleUpload(e) {
+      const files = Array.from(e.target.files || []);
+      const feed = document.getElementById('feed');
+      files.forEach(file => {
+        const url = URL.createObjectURL(file);
+        const div = document.createElement('div');
+        div.className = 'tile';
+        div.draggable = true;
+        div.ondragstart = dragStart;
+        div.innerHTML = `<img src="${url}" alt="foto" />`;
+        feed.appendChild(div);
+      });
+    }
+
+    // Textos
+    function addText(content) {
+      const el = document.createElement('div');
+      el.className = 'text-item';
+      el.textContent = content;
+      el.style.top = '40%';
+      el.style.fontSize = '26px';
+      el.style.fontFamily = 'ui-serif, Georgia, serif';
+      makeDraggable(el);
+      textLayer.appendChild(el);
+      selectElement(el);
+    }
+    function addSticker(content) {
+      const el = document.createElement('div');
+      el.className = 'sticker';
+      el.textContent = content;
+      el.style.top = '30%';
+      el.style.left = '50%';
+      el.style.transform = 'translate(-50%, -50%)';
+      makeDraggable(el);
+      textLayer.appendChild(el);
+      selectElement(el);
+    }
+    function addShape() {
+      const el = document.createElement('div');
+      el.className = 'shape';
+      el.style.width = '120px';
+      el.style.height = '120px';
+      el.style.top = '40%';
+      el.style.left = '50%';
+      el.style.transform = 'translate(-50%, -50%)';
+      makeDraggable(el);
+      textLayer.appendChild(el);
+      selectElement(el);
+    }
+    function addLine() {
+      const el = document.createElement('div');
+      el.className = 'line';
+      el.style.width = '160px';
+      el.style.top = '50%';
+      el.style.left = '50%';
+      el.style.transform = 'translate(-50%, -50%)';
+      makeDraggable(el);
+      textLayer.appendChild(el);
+      selectElement(el);
+    }
+
+    function makeDraggable(el) {
+      let startX = 0, startY = 0, initLeft = 0, initTop = 0;
+      el.addEventListener('pointerdown', (e) => {
+        e.stopPropagation();
+        selectElement(el);
+        startX = e.clientX; startY = e.clientY;
+        const rect = el.getBoundingClientRect();
+        const parentRect = phone.getBoundingClientRect();
+        initLeft = rect.left - parentRect.left + rect.width/2;
+        initTop = rect.top - parentRect.top + rect.height/2;
+        el.setPointerCapture(e.pointerId);
+        el.addEventListener('pointermove', onMove);
+        el.addEventListener('pointerup', onUp);
+      });
+      function onMove(e) {
+        const dx = e.clientX - startX, dy = e.clientY - startY;
+        el.style.left = (initLeft + dx) + 'px';
+        el.style.top = (initTop + dy) + 'px';
+        el.style.transform = 'translate(-50%, -50%)';
+      }
+      function onUp() {
+        el.removeEventListener('pointermove', onMove);
+        el.removeEventListener('pointerup', onUp);
+      }
+    }
+    function selectElement(el) {
+      if (selectedEl) selectedEl.classList.remove('selected');
+      selectedEl = el;
+      selectedEl.classList.add('selected');
+    }
+    document.addEventListener('pointerdown', (e) => {
+      if (!e.target.closest('.text-item, .sticker, .shape, .line')) {
+        if (selectedEl) selectedEl.classList.remove('selected');
+        selectedEl = null;
+      }
+    });
+
+    function updateSelectedTextColor(color) {
+      const sel = document.querySelector('.text-item.selected');
+      if (sel) sel.style.color = color;
+    }
+    function updateSelectedTextSize(size) {
+      const val = document.getElementById('textSizeVal');
+      if (val) val.textContent = size;
+      const sel = document.querySelector('.text-item.selected');
+      if (sel) sel.style.fontSize = size + 'px';
+    }
+    function updateSelectedTextFont(font) {
+      const sel = document.querySelector('.text-item.selected');
+      if (sel) sel.style.fontFamily = font;
+    }
+  </script>
+</body>
+</html>

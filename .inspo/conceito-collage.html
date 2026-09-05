@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>my-story-maker — Conceito Collage</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: ui-sans-serif, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Helvetica, Arial, sans-serif;
+      background: #fafafa; color: #111;
+    }
+    .topbar {
+      position: sticky; top: 0; z-index: 5;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 24px;
+      background: rgba(255,255,255,0.85);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid rgba(0,0,0,0.06);
+    }
+    .brand { font-weight: 800; letter-spacing: -0.3px; }
+    .wrap { max-width: 1100px; margin: 0 auto; padding: 28px 24px; }
+    .split {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+    @media (max-width: 860px) { .split { grid-template-columns: 1fr; } }
+    .panel {
+      background: #fff; border-radius: 16px;
+      box-shadow: 0 1px 0 rgba(0,0,0,0.04), 0 8px 24px rgba(0,0,0,0.06);
+      padding: 16px;
+    }
+    .panel h3 { margin: 4px 0 12px; font-size: 14px; opacity: 0.7; text-transform: uppercase; letter-spacing: 0.08em; }
+    .collage {
+      aspect-ratio: 4/5;
+      border-radius: 14px;
+      background:
+        linear-gradient(135deg, rgba(255,255,255,0.4), rgba(255,255,255,0.1)),
+        repeating-linear-gradient(45deg, #f6c 0 20px, #9cf 20px 40px);
+      display: grid; gap: 8px; padding: 10px;
+    }
+    .collage.grid-a { grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(3, 1fr); }
+    .collage.grid-b { grid-template-columns: repeat(2, 1fr); grid-template-rows: repeat(2, 1fr); }
+    .cell {
+      border-radius: 10px;
+      background-size: cover; background-position: center;
+      box-shadow: inset 0 0 0 1px rgba(0,0,0,0.06);
+    }
+    .templates { display: grid; gap: 10px; }
+    .tpl {
+      display: grid; gap: 6px; padding: 8px; border-radius: 12px;
+      background: #f6f6f6;
+    }
+    .tpl .row { display: grid; gap: 6px; }
+    .tpl .row-2 { grid-template-columns: repeat(2, 1fr); }
+    .tpl .row-3 { grid-template-columns: repeat(3, 1fr); }
+    .box { height: 44px; border-radius: 8px; background: linear-gradient(180deg, #cfe8ff, #ffd1dc); }
+    .actions { display:flex; align-items:center; gap: 10px; margin-top: 12px; }
+    .btn {
+      padding: 10px 14px; border-radius: 12px; border: 1px solid rgba(0,0,0,0.08);
+      background: #fff; font-weight: 700; font-size: 13px;
+    }
+    .btn.primary { background: #111; color: #fff; border-color: #111; }
+    .note { margin-top: 10px; font-size: 12px; opacity: 0.7; }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">my-story-maker</div>
+    <div style="display:flex; gap:10px;">
+      <button class="btn">Importar fotos</button>
+      <button class="btn primary">Exportar</button>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <div class="split">
+      <!-- Editor visual -->
+      <section class="panel">
+        <h3>Editor de collage</h3>
+        <div class="collage grid-a">
+          <div class="cell" style="background-image:url('https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=400&q=80')"></div>
+          <div class="cell" style="background-image:url('https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=400&q=80')"></div>
+          <div class="cell" style="background-image:url('https://images.unsplash.com/photo-1500530855699-b59d19a91e26?w=400&q=80')"></div>
+          <div class="cell" style="background-image:url('https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=400&q=80')"></div>
+          <div class="cell" style="background-image:url('https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=400&q=80')"></div>
+          <div class="cell" style="background-image:url('https://images.unsplash.com/photo-1470770841072-f978cf4d019e?w=400&q=80')"></div>
+          <div class="cell" style="background-image:url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=400&q=80')"></div>
+          <div class="cell" style="background-image:url('https://images.unsplash.com/photo-1520839090488-4a6c211e2f94?w=400&q=80')"></div>
+          <div class="cell" style="background-image:url('https://images.unsplash.com/photo-1500534623283-312aade485b7?w=400&q=80')"></div>
+        </div>
+        <div class="note">Arraste para reordenar • redimensione as células • adicione filtros por bloco</div>
+      </section>
+
+      <!-- Templates -->
+      <section class="panel">
+        <h3>Templates de colagem</h3>
+        <div class="templates">
+          <div class="tpl">
+            <div class="row row-3"><div class="box"></div><div class="box"></div><div class="box"></div></div>
+            <div class="row row-3"><div class="box"></div><div class="box"></div><div class="box"></div></div>
+            <div class="row row-3"><div class="box"></div><div class="box"></div><div class="box"></div></div>
+          </div>
+          <div class="tpl">
+            <div class="row row-2"><div class="box"></div><div class="box"></div></div>
+            <div class="row row-2"><div class="box"></div><div class="box"></div></div>
+          </div>
+          <div class="tpl">
+            <div class="row row-3"><div class="box" style="grid-column: span 2;"></div><div class="box"></div></div>
+            <div class="row row-3"><div class="box"></div><div class="box"></div><div class="box"></div></div>
+          </div>
+        </div>
+        <div class="actions">
+          <button class="btn primary">Usar template</button>
+          <button class="btn">Grade automática</button>
+        </div>
+        <div class="note">Dica: use grade automática para ajustar bordas e espaçamentos em um clique.</div>
+      </section>
+    </div>
+  </main>
+</body>
+</html>
