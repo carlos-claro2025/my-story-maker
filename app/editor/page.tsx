@@ -149,11 +149,11 @@ export default function EditorPage() {
           <section className="rounded-2xl bg-white shadow-sm border border-black/5 overflow-hidden">
             <div className="px-4 py-3 text-xs uppercase tracking-widest opacity-70">Templates de colagem</div>
             <div className="p-3 grid gap-3">
-              {[
+              {([
                 ["vazio", "Vazio", () => clearCanvas()],
                 ["2-fotos", "Grade 2x2", () => applyGrid(2)],
                 ["3-fotos", "Grade 3x3", () => applyGrid(3)],
-              ].map(([key, label, fn]) => (
+              ] as const).map(([key, label, fn]) => (
                 <button
                   key={key}
                   onClick={() => {
@@ -246,3 +246,4 @@ export default function EditorPage() {
     </div>
   );
 }
+

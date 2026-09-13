@@ -6,8 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
-    "test": "echo \"No tests defined\""
+    "lint": "eslint .",
+    "test": "vitest run"
   },
   "dependencies": {
     "fabric": "^6.5.0",
@@ -20,6 +20,8 @@
     "@types/node": "latest",
     "@types/react": "latest",
     "@types/react-dom": "latest",
+    "@typescript-eslint/eslint-plugin": "^8.69.0",
+    "@typescript-eslint/parser": "^8.69.0",
     "autoprefixer": "latest",
     "eslint": "latest",
     "eslint-config-next": "latest",
