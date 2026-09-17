@@ -32,5 +32,5 @@ Acesse `http://localhost:8765/` para testar.
 
 ## 📄 Licença
 
-MIT © 2026 – Carlos Claro
+2026 – Carlos Claro
 
