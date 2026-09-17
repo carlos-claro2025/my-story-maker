@@ -1,0 +1,11 @@
+node_modules/
+.next/
+.git/
+.inspo/
+app/
+assets/
+docs/
+src/
+.github/
+*.tsbuildinfo
+tsconfig.tsbuildinfo

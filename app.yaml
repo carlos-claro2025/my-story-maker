@@ -1,0 +1,5 @@
+kind: wasmer.io/App.v0
+name: my-story-maker
+owner: carlosklaro
+package: .
+app_id: da_nX3IVtVU54dY

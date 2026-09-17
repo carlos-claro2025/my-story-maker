@@ -1,0 +1,14 @@
+[package]
+name = "carlosklaro/my-story-maker-app"
+version = "0.1.0"
+description = "Editor de stories e colagens para Instagram rodando no navegador."
+license = "MIT"
+readme = "README.md"
+repository = "https://github.com/carlos-claro2025/my-story-maker"
+homepage = "https://github.com/carlos-claro2025/my-story-maker"
+
+[dependencies]
+"wasmer/static-web-server" = "^1"
+
+[fs]
+public = "public"

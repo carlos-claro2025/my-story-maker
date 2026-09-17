@@ -1,0 +1,33 @@
+[general]
+
+#### Address & Root dir
+host = "::"
+port = 8080
+root = "/public"
+
+#### Logging
+log-level = "error"
+
+#### Cache Control headers
+cache-control-headers = true
+
+#### Auto Compression
+compression = true
+
+#### CORS & Security headers
+# security-headers = true
+# cors-allow-origins = ""
+
+#### Directory listing
+directory-listing = false
+
+#### Page fallback for 404s
+# page-fallback = ""
+
+#### Check for existing pre-compressed files
+compression-static = true
+
+#### Redirect to trailing slash in the requested directory uri
+redirect-trailing-slash = true
+
+[advanced]
