@@ -210,6 +210,8 @@
               <div class="export-option" data-format="copy">Copiar para a área de transferência</div>
               <div class="export-option" data-format="share">Compartilhar…</div>
               <div class="export-sep"></div>
+              <div class="export-option" data-format="instagram">Pronto para o Instagram…</div>
+              <div class="export-sep"></div>
               <div class="export-label">Qualidade</div>
               <div class="export-scale" id="exportScale" role="group" aria-label="Resolução da exportação">
                 <button type="button" class="scale-btn" data-scale="1" aria-pressed="false">1x</button>
@@ -617,6 +619,35 @@
     </div>
   </div>
 
+  <div id="instagramModal" class="modal" style="display:none;" role="dialog" aria-modal="true" aria-labelledby="instagramTitle">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="instagramTitle">Pronto para o Instagram</h3>
+        <button class="modal-close" id="instagramClose" aria-label="Fechar">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="ig-layout">
+          <div class="ig-preview-wrap">
+            <img id="igPreview" class="ig-preview" alt="Prévia do story em JPEG" />
+          </div>
+          <div class="ig-fields">
+            <div class="ig-status" id="igStatus" role="status" aria-live="polite">Gerando imagem…</div>
+            <label class="ig-label" for="igCaption">Legenda (opcional)</label>
+            <textarea id="igCaption" class="ig-caption" rows="3" maxlength="2200"
+              placeholder="Escreva a legenda que vai junto com a imagem…"></textarea>
+            <div class="ig-counter" id="igCaptionCounter">0 / 2200</div>
+            <p class="ig-hint" id="igHint"></p>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn" id="instagramCloseFooter">Fechar</button>
+        <button class="btn" id="igDownloadBtn">Baixar JPEG + copiar legenda</button>
+        <button class="btn primary" id="igShareBtn">Compartilhar…</button>
+      </div>
+    </div>
+  </div>
+
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
   <script src="js/state.js"></script>
   <script src="js/theme.js"></script>
@@ -625,6 +656,7 @@
   <script src="js/drag-drop.js"></script>
   <script src="js/elements.js"></script>
   <script src="js/export.js"></script>
+  <script src="js/instagram.js"></script>
   <script src="js/music.js"></script>
   <script src="js/history.js"></script>
   <script src="js/layers.js"></script>

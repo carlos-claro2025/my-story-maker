@@ -154,13 +154,49 @@
     return this.saveToDisk('png', quality);
   },
 
+  /* Cor de fundo real do canvas, usada para achatar formatos sem transparência */
+  backgroundColor() {
+    const fallback = '#1f1f1f';
+    const phone = document.getElementById('phone');
+    if (!phone || !window.getComputedStyle) return fallback;
+    try {
+      const own = window.getComputedStyle(phone).backgroundColor;
+      if (own && own !== 'transparent' && own !== 'rgba(0, 0, 0, 0)') return own;
+      const token = window.getComputedStyle(document.documentElement)
+        .getPropertyValue('--canvas-bg');
+      return (token || '').trim() || fallback;
+    } catch (err) {
+      return fallback;
+    }
+  },
+
+  /* JPEG/WEBP não guardam transparência: sem isto as bordas arredondadas do
+     canvas saem pretas. Desenha o resultado sobre um fundo opaco. */
+  flatten(canvas, color) {
+    try {
+      const out = document.createElement('canvas');
+      out.width = canvas.width;
+      out.height = canvas.height;
+      const ctx = out.getContext('2d');
+      if (!ctx) return canvas;
+      ctx.fillStyle = color || '#000000';
+      ctx.fillRect(0, 0, out.width, out.height);
+      ctx.drawImage(canvas, 0, 0);
+      return out;
+    } catch (err) {
+      console.warn('Não foi possível achatar o fundo da exportação', err);
+      return canvas;
+    }
+  },
+
   /* Renderiza e devolve um Blob, usado por copiar/compartilhar */
   async toBlob(format, quality) {
     const canvas = await this.render(this.scale);
     const mime = format === 'jpg' ? 'image/jpeg' : (format === 'webp' ? 'image/webp' : 'image/png');
+    const target = format === 'png' ? canvas : this.flatten(canvas, this.backgroundColor());
     return await new Promise((resolve, reject) => {
       try {
-        canvas.toBlob(
+        target.toBlob(
           (blob) => (blob ? resolve(blob) : reject(new Error('blob vazio'))),
           mime,
           quality || 0.92
@@ -232,7 +268,8 @@
         '-' + String(now.getMinutes()).padStart(2, '0');
 
       const mime = format === 'jpg' ? 'image/jpeg' : (format === 'webp' ? 'image/webp' : 'image/png');
-      const href = format === 'png' ? canvas.toDataURL('image/png') : canvas.toDataURL(mime, quality);
+      const target = format === 'png' ? canvas : this.flatten(canvas, this.backgroundColor());
+      const href = format === 'png' ? target.toDataURL('image/png') : target.toDataURL(mime, quality);
 
       const link = document.createElement('a');
       link.download = 'story-' + ts + '.' + format;

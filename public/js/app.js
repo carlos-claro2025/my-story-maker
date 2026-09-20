@@ -62,6 +62,7 @@ document.addEventListener('DOMContentLoaded', () => {
   boot('Elements', () => Elements.init());
   boot('DragDrop', () => DragDrop.init());
   boot('Export', () => Export.init());
+  boot('Instagram', () => window.Instagram?.init());
   boot('MusicPlayer', () => window.MusicPlayer?.init());
   boot('History', () => History.init());
   boot('Layers', () => Layers.init());
@@ -200,11 +201,12 @@ document.addEventListener('DOMContentLoaded', () => {
     opt.addEventListener('click', (e) => {
       e.stopPropagation();
       const format = e.currentTarget.dataset.format;
-      // Copiar/compartilhar não são formatos de arquivo: não fecham o menu antes de resolver
-      if (format === 'copy' || format === 'share') {
+      // Copiar/compartilhar/Instagram não são formatos de arquivo: não fecham o menu antes de resolver
+      if (format === 'copy' || format === 'share' || format === 'instagram') {
         closeMenus();
         if (format === 'copy') Export.copyToClipboard();
-        else Export.share();
+        else if (format === 'share') Export.share();
+        else window.Instagram?.open();
         return;
       }
       closeMenus();
@@ -229,6 +231,12 @@ document.addEventListener('DOMContentLoaded', () => {
       syncExportScale();
     });
   });
+
+  // Instagram: modal "pronto para postar"
+  document.getElementById('instagramClose')?.addEventListener('click', () => window.Instagram?.close());
+  document.getElementById('instagramCloseFooter')?.addEventListener('click', () => window.Instagram?.close());
+  document.getElementById('igShareBtn')?.addEventListener('click', () => window.Instagram?.share());
+  document.getElementById('igDownloadBtn')?.addEventListener('click', () => window.Instagram?.download());
 
   // Sugestão inteligente de modelo
   document.getElementById('templateSuggestionApply')?.addEventListener('click', (e) => {
@@ -434,9 +442,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (e.key === 'Escape') {
       // Modal aberto: Esc fecha o modal antes de mexer na seleção
-      const openModal = [...document.querySelectorAll('#shortcutsModal, #projectListModal, #stickerModal')]
+      const openModal = [...document.querySelectorAll('#shortcutsModal, #projectListModal, #stickerModal, #instagramModal')]
         .find(m => m.style.display && m.style.display !== 'none');
-      if (openModal) { openModal.style.display = 'none'; return; }
+      if (openModal) {
+        openModal.style.display = 'none';
+        if (openModal.id === 'instagramModal') window.Instagram?.revoke();
+        return;
+      }
       if (toolsEl && toolsEl.classList.contains('open')) { setToolsOpen(false); return; }
       window.State.selected = null;
       window.State.activeCell = null;

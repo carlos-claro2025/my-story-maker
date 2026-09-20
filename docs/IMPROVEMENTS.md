@@ -56,8 +56,9 @@
 - [x] Tamanho de saída (1x, 2x, 3x)
 - [x] Copiar para a área de transferência
 - [x] Compartilhamento nativo
+- [x] **Pronto para o Instagram** — JPEG exato 1080×1920 (9:16) ou 1080×1080 (1:1), fundo opaco, compressão automática até ficar abaixo de 8 MB, prévia com dimensões e tamanho, legenda com contador de 2200 caracteres e envio pelo Web Share API no celular
 - [ ] GIF animado (sequência de quadros)
-- [ ] Publicação direta no Instagram (requer backend + credenciais da Graph API)
+- [ ] Publicação direta no Instagram — **impossível sem backend**: a Content Publishing API exige conta Business/Creator vinculada a uma Página do Facebook, hospedagem da imagem em URL HTTPS pública e não aceita stickers, enquetes, links ou música. Para contas pessoais não existe caminho automatizado (o deep link `instagram-stories://share` é bloqueado pelos navegadores), por isso o fluxo entregue é "pronto para o Instagram"
 - [ ] compressão ajustável (controle de qualidade na UI)
 
 ### 4. Snap Guides Inteligentes 📐

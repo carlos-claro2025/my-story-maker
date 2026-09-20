@@ -8,6 +8,7 @@ declare global {
     Elements: any;
     DragDrop: any;
     Export: any;
+    Instagram: any;
     MusicPlayer?: any;
     History: any;
     Resize: any;

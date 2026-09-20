@@ -9,12 +9,27 @@
 - **Filtros e ajustes** — Presets (grayscale, sépia, etc.) mais brilho, contraste, saturação, temperatura, exposição, vinheta e desfoque — globais ou por célula.
 - **Tema claro/escuro** — Alternância no topbar, preferência salva em `localStorage`, respeito ao `prefers-color-scheme` do sistema e sincronização entre abas, sem "flash" branco ao carregar.
 - **Exportação flexível** — PNG, JPG e WEBP em 1x, 2x ou 3x, além de **copiar para a área de transferência** e **compartilhar** via Web Share API quando o navegador suporta.
+- **Pronto para o Instagram** — Gera o JPEG exato que o Instagram aceita (1080×1920 no story, 1080×1080 no post), com fundo opaco, compressão automática abaixo de 8 MB, prévia com dimensões e tamanho, legenda com contador de 2200 caracteres e um clique para salvar ou compartilhar direto do celular.
 - **Salvar e retomar** — Projetos salvos no IndexedDB, autosave a cada 30 s, exportação/importação de arquivo `.json` editável e pré-visualização.
 - **Histórico** — Desfazer/refazer, camadas com reordenação e atalhos de teclado (consulte `?` no editor).
 - **Música de fundo** — Player embutido para trilha sonora do story.
 - **Interface responsiva** — Layout adaptável para desktop, tablet e celular, com gaveta lateral de ferramentas no mobile.
 - **Acessibilidade** — Botões com `aria-label`, modais com `role="dialog"`/`aria-modal`, toasts com `aria-live` e navegação por teclado nos controles principais.
 - **Privacidade** — Todo o processamento acontece no cliente; as imagens nunca saem do dispositivo.
+
+## 📸 Publicar no Instagram
+
+O editor gera um arquivo **pronto para publicar** — sem backend, sem login e sem enviar nada para servidores.
+
+1. Monte o story (9:16) ou o post (1:1) no canvas.
+2. Clique em **Exportar → Pronto para o Instagram…**.
+3. Confira a prévia: o status mostra as dimensões exatas e o tamanho final do arquivo.
+4. Escreva a legenda (até 2200 caracteres) — no celular ela vai junto no compartilhamento.
+5. Toque em **Compartilhar…** e escolha o Instagram, ou **Baixar JPEG** para postar pelo app.
+
+O arquivo sai em JPEG com fundo opaco (sem cantos pretos), 1080×1920 no story e 1080×1080 no post, e a qualidade é reduzida automaticamente até ficar abaixo do limite de 8 MB do Instagram.
+
+> **Por que não há publicação automática?** A Content Publishing API do Instagram só funciona para contas **Business/Creator** vinculadas a uma Página do Facebook, exige a imagem hospedada em uma URL HTTPS pública (ou seja, um backend) e não aceita stickers, enquetes, links ou música. Para contas pessoais não existe caminho automatizado — o deep link `instagram-stories://share` é bloqueado pelos navegadores. Por isso o fluxo entregue é "pronto para o Instagram".
 
 ## 📦 Instalação local
 
