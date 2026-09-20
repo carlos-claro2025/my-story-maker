@@ -1,5 +1,18 @@
 # Melhorias para my-story-maker
 
+## 🆕 Recém implementado (tema, exportação e templates)
+
+- [x] Tema claro/escuro com tokens em `css/variables.css` (`data-theme` no `<html>`, `js/theme.js`)
+- [x] Preferência de tema em `localStorage`, respeito ao `prefers-color-scheme` e sync entre abas
+- [x] Script anti-flash inline no `<head>` (sem "flash" branco ao carregar)
+- [x] Exportação em 1x / 2x / 3x (`Export.setScale`)
+- [x] Copiar o story para a área de transferência (Clipboard API)
+- [x] Compartilhar via Web Share API nível 2 (fallback com aviso)
+- [x] Sugestão inteligente de template conforme a quantidade de fotos (`Templates.suggestFor`)
+- [x] Acessibilidade: `aria-label` em botões de ícone, `role="dialog"`/`aria-modal` nos modais, `aria-live` nos toasts
+- [x] Testes unitários de `Theme`, `Export` e `Templates` (`src/__tests__/features.test.ts`)
+- [x] CI no GitHub Actions (lint + tipos + testes + build)
+
 ## ✅ Já Implementado
 - [x] Sistema de camadas com ordenação, visibilidade e bloqueio
 - [x] Resize com alças de 8 pontos
@@ -20,7 +33,7 @@
 - [x] Integrar todos os sistemas no app.js
 - [x] Corrigir mapeamento de filtros
 - [x] Criar CSS para novos painéis
-- [ ] Adicionar modal de seleção de formato na exportação
+- [x] Adicionar modal de seleção de formato na exportação (menu do botão Exportar)
 
 ## 📋 Próximas Melhorias Prioritárias
 
@@ -39,10 +52,13 @@
 - Stickers animados
 
 ### 3. Exportação Avançada 📤
-- Modal com opções: PNG, JPG, WEBP
-- Controle de qualidade
-- Tamanho de saída (original, 2x, 4x)
-- compressão ajustável
+- [x] Opções: PNG, JPG, WEBP
+- [x] Tamanho de saída (1x, 2x, 3x)
+- [x] Copiar para a área de transferência
+- [x] Compartilhamento nativo
+- [ ] GIF animado (sequência de quadros)
+- [ ] Publicação direta no Instagram (requer backend + credenciais da Graph API)
+- [ ] compressão ajustável (controle de qualidade na UI)
 
 ### 4. Snap Guides Inteligentes 📐
 - Linhas guia ao centralizar
@@ -63,10 +79,12 @@
 - Loading states
 
 ### 7. Acessibilidade ♿
-- Navegação por teclado completa
-- ARIA labels
-- Contraste adequado
-- Screen reader support
+- [x] ARIA labels nos botões de ícone
+- [x] Modais com `role="dialog"` / `aria-modal`
+- [x] Toasts com `aria-live="polite"`
+- [ ] Navegação por teclado completa (foco preso dentro dos modais)
+- [ ] Auditoria de contraste (WCAG AA) nos dois temas
+- [ ] Screen reader support
 
 ### 8. Recursos Avançados 🚀
 - Grupos de elementos (agrupar/desagrupar)
@@ -78,7 +96,7 @@
 ## 🔧 Melhorias Técnicas
 
 ### CSS
-- [ ] Variáveis CSS para tema claro/escuro
+- [x] Variáveis CSS para tema claro/escuro
 - [ ] Responsividade mobile aprimorada
 - [ ] Animações CSS para transições
 - [ ] Melhorias no design dos painéis
@@ -87,7 +105,7 @@
 - [ ] Modularização completa (ES6 modules)
 - [ ] Tratamento de erros centralizado
 - [ ] Logging e debugging
-- [ ] Testes unitários
+- [x] Testes unitários (Vitest + jsdom)
 - [ ] Code splitting
 
 ### Funcionalidades

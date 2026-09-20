@@ -1,0 +1,184 @@
+/* Tokens de design do my-story-maker.
+   O tema escuro é o padrão (:root). O tema claro é aplicado com
+   [data-theme="light"] no <html>, trocado por js/theme.js. */
+:root {
+  color-scheme: dark;
+
+  --bg: #0e0e0e;
+  --panel: #141414;
+  --panel-2: #1c1c1c;
+  --border: #2a2a2a;
+  --line: #2e2e2e;
+  --text: #f3f3f3;
+  --muted: #a9a9a9;
+  --accent: #e9c46a;
+  --danger: #ef6c57;
+  --radius: 14px;
+  --shadow: 0 10px 30px rgba(0,0,0,0.4);
+
+  /* Aliases usados pelos painéis (camadas, histórico, modais, propriedades) */
+  --bg-primary: #0e0e0e;
+  --bg-secondary: #1a1a1a;
+  --bg-tertiary: #242424;
+  --bg-hover: #2b2b2b;
+  --text-primary: #f3f3f3;
+  --text-muted: #8a8a8a;
+  --on-accent: #23200f;
+
+  /* Superfícies estruturais */
+  --sidebar-from: #151515;
+  --sidebar-to: #0f0f0f;
+  --tools-from: #141414;
+  --tools-to: #0d0d0d;
+  --topbar-bg: #0c0c0c;
+  --center-bg: #0b0b0b;
+  --statusbar-bg: #0a0a0a;
+  --canvas-bg: #1f1f1f;
+  --canvas-border: #2f2f2f;
+
+  /* Superfícies de controle */
+  --btn-bg: #222;
+  --btn-bg-hover: #2a2a2a;
+  --card-bg: #1d1d1d;
+  --card-bg-hover: #272727;
+  --tile-bg: #252525;
+  --tile-bg-2: #353535;
+  --inset-bg: #181818;
+  --chip-bg: #1f1f1f;
+  --kbd-bg: #1e1e1e;
+  --kbd-border: #3a3a3a;
+  --sticker-bg: rgba(255, 255, 255, 0.06);
+
+  /* Texto secundário */
+  --text-soft: #ddd;
+  --text-dim: #aaa;
+  --text-dim-2: #b2b2b2;
+  --text-faint: #666;
+
+  /* Tons do accent */
+  --accent-soft: #3f3a2c;
+  --accent-soft-border: #4a4331;
+  --accent-tint: #2d2a22;
+  --accent-border: #a38a2c;
+  --accent-bright: #c7b354;
+  --accent-pale: #f1e5a6;
+
+  /* Feedback */
+  --danger-strong: #ff4444;
+  --danger-strong-hover: #cc3333;
+  --toast-success: #2d6a4f;
+  --toast-error: #9d0208;
+  --toast-info: #0050b3;
+  --toast-warning: #e09f3e;
+  --toast-bg-success: #14301f;
+  --toast-bg-error: #2b0708;
+  --toast-bg-info: #0a1c33;
+  --toast-bg-warning: #3a2a0d;
+  --toast-text-success: #b7f7cf;
+  --toast-text-error: #ffc9c9;
+  --toast-text-info: #bcdcff;
+  --toast-text-warning: #ffe1a8;
+  --ok: #4ade80;
+
+  /* Sobreposições e cromo */
+  --chip-overlay-bg: rgba(20, 20, 20, 0.55);
+  --chip-overlay-border: rgba(255, 255, 255, 0.15);
+  --chip-overlay-text: #eee;
+  --chip-overlay-active-bg: rgba(60, 56, 40, 0.75);
+  --scrim: rgba(0, 0, 0, 0.85);
+  --scrim-soft: rgba(0, 0, 0, 0.55);
+  --tooltip-bg: #1a1a1a;
+  --tooltip-border: #333;
+  --tooltip-text: #ddd;
+  --scrollbar: #333;
+  --scrollbar-hover: #555;
+  --loading-from: #1a1a2e;
+  --loading-to: #0d0d15;
+}
+
+[data-theme='light'] {
+  color-scheme: light;
+
+  --bg: #f5f6f8;
+  --panel: #ffffff;
+  --panel-2: #eef0f3;
+  --border: #d8dbe0;
+  --line: #e3e6ea;
+  --text: #17191c;
+  --muted: #5c6370;
+  --accent: #a8801a;
+  --danger: #d1452c;
+  --shadow: 0 10px 30px rgba(15, 23, 42, 0.14);
+
+  --bg-primary: #f5f6f8;
+  --bg-secondary: #eceef1;
+  --bg-tertiary: #e2e5ea;
+  --bg-hover: #d8dbe0;
+  --text-primary: #17191c;
+  --text-muted: #6b7280;
+  --on-accent: #ffffff;
+
+  --sidebar-from: #ffffff;
+  --sidebar-to: #f1f3f6;
+  --tools-from: #ffffff;
+  --tools-to: #f1f3f6;
+  --topbar-bg: #ffffff;
+  --center-bg: #eceef1;
+  --statusbar-bg: #ffffff;
+  --canvas-bg: #ffffff;
+  --canvas-border: #d8dbe0;
+
+  --btn-bg: #ffffff;
+  --btn-bg-hover: #eceef1;
+  --card-bg: #ffffff;
+  --card-bg-hover: #eceef1;
+  --tile-bg: #e6e9ed;
+  --tile-bg-2: #d2d7dd;
+  --inset-bg: #f3f4f7;
+  --chip-bg: #f7f8fa;
+  --kbd-bg: #f0f1f4;
+  --kbd-border: #c9ced6;
+  --sticker-bg: rgba(0, 0, 0, 0.04);
+
+  --text-soft: #2b3038;
+  --text-dim: #6b7280;
+  --text-dim-2: #7a8290;
+  --text-faint: #8b929e;
+
+  --accent-soft: #f8eed6;
+  --accent-soft-border: #e2cb8d;
+  --accent-tint: #fbf3dd;
+  --accent-border: #c9a53f;
+  --accent-bright: #b8901f;
+  --accent-pale: #6f5405;
+
+  --danger-strong: #e5484d;
+  --danger-strong-hover: #c62a30;
+  --toast-success: #2f855a;
+  --toast-error: #c53030;
+  --toast-info: #2b6cb0;
+  --toast-warning: #d69e2e;
+  --toast-bg-success: #e6f6ec;
+  --toast-bg-error: #fdeaea;
+  --toast-bg-info: #e8f1fd;
+  --toast-bg-warning: #fdf3e0;
+  --toast-text-success: #1c5c37;
+  --toast-text-error: #8a1f1f;
+  --toast-text-info: #1c4e8a;
+  --toast-text-warning: #7a5208;
+  --ok: #16a34a;
+
+  --chip-overlay-bg: rgba(255, 255, 255, 0.78);
+  --chip-overlay-border: rgba(0, 0, 0, 0.12);
+  --chip-overlay-text: #26292e;
+  --chip-overlay-active-bg: rgba(233, 196, 106, 0.92);
+  --scrim: rgba(255, 255, 255, 0.88);
+  --scrim-soft: rgba(0, 0, 0, 0.45);
+  --tooltip-bg: #26292e;
+  --tooltip-border: #26292e;
+  --tooltip-text: #f5f6f8;
+  --scrollbar: #c9ced6;
+  --scrollbar-hover: #aeb5bf;
+  --loading-from: #ffffff;
+  --loading-to: #eceef1;
+}
