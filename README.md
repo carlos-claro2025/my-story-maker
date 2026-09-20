@@ -2,6 +2,8 @@
 
 > **Editor de stories e collages** para Instagram — 100% no navegador, sem backend e sem upload de fotos para servidores.
 
+**▶ Testar agora:** <https://my-story-maker.wasmer.app>
+
 ## 🚀 Principais funcionalidades
 
 - **Editor de stories** — Arraste e solte imagens, adicione textos, adesivos, formas e linhas com seleção, redimensionamento e rotação no canvas.
@@ -59,6 +61,25 @@ python -m http.server 8765
 | `npm test` | Testes unitários (Vitest + jsdom) |
 | `npx tsc --noEmit` | Checagem de tipos |
 
+## 🚀 Deploy (Wasmer Edge)
+
+A versão publicada roda no Wasmer Edge servindo o diretório `public/` com o `static-web-server`.
+
+```bash
+npm i -g wasmer     # instala a CLI (uma vez só)
+wasmer login        # autentica na conta Wasmer
+wasmer deploy       # publica a app definida em app.yaml
+```
+
+O `wasmer.toml` empacota o `public/` e o `.wasmerignore` mantém fora do pacote tudo que não é editor (`node_modules`, `.next`, `src`, `docs`, `.github`). **Cada deploy precisa de uma versão nova** no `wasmer.toml` — repetir a versão atual falha com `The version X already exists for package`.
+
+Se o token estiver salvo mas a CLI disser `Not logged in registry wasmer.io`, o `WASMER_DIR` provavelmente aponta para a pasta de instalação em vez de `~/.wasmer`. Nesse caso rode `wasmer login` novamente.
+
+| Recurso | Link |
+| --- | --- |
+| App publicado | <https://my-story-maker.wasmer.app> |
+| Painel do app | <https://wasmer.io/apps/carlosklaro/my-story-maker> |
+
 ## 🔄 Integração contínua
 
 O workflow em `.github/workflows/ci.yml` roda lint, checagem de tipos, testes e build em cada push e pull request para `master`/`main`.
@@ -70,9 +91,11 @@ app/                 App shell do Next.js
 public/              Editor estático (HTML/CSS/JS puro)
   index.html
   css/               Tokens de tema (variables.css) + estilos
-  js/                Módulos: State, Theme, Templates, Filters, Export, ...
+  js/                Módulos: State, Theme, Templates, Filters, Export, Instagram, ...
 src/__tests__/       Testes unitários dos módulos do editor
 docs/                PRD, ADR, guias e backlog de melhorias
+wasmer.toml          Empacotamento do public/ para o Wasmer Edge
+app.yaml             Definição da app na Edge (owner, app_id)
 ```
 
 ## 📄 Licença
