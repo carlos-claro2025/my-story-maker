@@ -1,6 +1,6 @@
 [package]
 name = "carlosklaro/my-story-maker-app"
-version = "0.2.0"
+version = "0.3.0"
 description = "Editor de stories e colagens para Instagram rodando no navegador."
 license = "MIT"
 readme = "README.md"

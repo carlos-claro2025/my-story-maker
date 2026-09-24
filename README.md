@@ -33,6 +33,17 @@ O arquivo sai em JPEG com fundo opaco (sem cantos pretos), 1080×1920 no story e
 
 > **Por que não há publicação automática?** A Content Publishing API do Instagram só funciona para contas **Business/Creator** vinculadas a uma Página do Facebook, exige a imagem hospedada em uma URL HTTPS pública (ou seja, um backend) e não aceita stickers, enquetes, links ou música. Para contas pessoais não existe caminho automatizado — o deep link `instagram-stories://share` é bloqueado pelos navegadores. Por isso o fluxo entregue é "pronto para o Instagram".
 
+## 📝 Atualizações recentes
+
+**v0.3.0 — 24/09/2026** — Limpeza e robustez (deploy no ar):
+
+- `html2canvas` agora é servido do próprio app (`public/vendor/`) em vez do CDN jsdelivr — sem dependência externa e sem risco de supply-chain.
+- Removido `public/js/4project.js` (370 linhas de código morto, duplicata antiga do `project.js`).
+- Dependências instaladas mas nunca usadas foram embora: `fabric`, `tailwindcss`, `postcss`, `autoprefixer` (o editor é HTML/CSS/JS puro; o shell Next é só um redirect).
+- Validação completa: 73 testes, lint, tipos e build verdes; exportação PNG e fluxo Instagram conferidos no navegador.
+
+**v0.2.0 — 20/09/2026** — Fluxo **Pronto para o Instagram** (JPEG 1080×1920/1080×1080, legenda com contador, Web Share), correção dos cantos pretos no JPG/WEBP e publicação no Wasmer Edge.
+
 ## 📦 Instalação local
 
 ```bash
@@ -92,6 +103,7 @@ public/              Editor estático (HTML/CSS/JS puro)
   index.html
   css/               Tokens de tema (variables.css) + estilos
   js/                Módulos: State, Theme, Templates, Filters, Export, Instagram, ...
+  vendor/            html2canvas servido localmente (sem CDN externo)
 src/__tests__/       Testes unitários dos módulos do editor
 docs/                PRD, ADR, guias e backlog de melhorias
 wasmer.toml          Empacotamento do public/ para o Wasmer Edge
