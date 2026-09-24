@@ -1,1 +1,2 @@
-@import "tailwindcss";
+/* Shell do Next apenas redireciona para public/index.html (editor estatico).
+   O Tailwind foi removido daqui: o editor usa CSS puro em public/css. */
